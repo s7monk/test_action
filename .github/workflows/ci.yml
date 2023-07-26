@@ -29,7 +29,7 @@ jobs:
       MVN_COMMON_OPTIONS: -U -B --no-transfer-progress
       MVN_BUILD_OUTPUT_FILE: "/tmp/mvn_build_output.out"
       MVN_VALIDATION_DIR: "/tmp/paimon-web-validation-deployment"
-      MYSQL_ROOT_PASSWORD: paimon@123
+      MYSQL_ROOT_PASSWORD: root
 
     steps:
       - name: Checkout code
