@@ -46,10 +46,12 @@ jobs:
           mysql version: '5.7'
           mysql database: 'paimon'
           mysql root password: ${{ env.MYSQL_ROOT_PASSWORD }}
+      - name: Create tables
+        run: |
+          mysql -h127.0.0.1 -P3306 -uroot -p${{env.MYSQL_ROOT_PASSWORD}} -Dpaimon < db/mysql/mysql_test.sql
       - name: Build
         run: |
           mvn clean install
-
       - name: Check licensing
         run: |
           mvn ${{ env.MVN_COMMON_OPTIONS }} exec:java@check-licensing -N \
