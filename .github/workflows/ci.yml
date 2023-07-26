@@ -20,20 +20,11 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: root
-
     env:
       MVN_COMMON_OPTIONS: -U -B --no-transfer-progress
       MVN_BUILD_OUTPUT_FILE: "/tmp/mvn_build_output.out"
       MVN_VALIDATION_DIR: "/tmp/paimon-web-validation-deployment"
-      DB_USER: root
-      DB_DATABASE: paimon
+      MYSQL_ROOT_PASSWORD: paimon@123
 
     steps:
       - name: Checkout code
@@ -43,10 +34,18 @@ jobs:
         with:
           java-version: 8
           distribution: 'adopt'
-      - name: Init MySQL
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -proot
+      - name: Shutdown Ubuntu MySQL (SUDO)
+        run: sudo service mysql stop
+      - name: Set up MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          character set server: 'utf8'
+          collation server: 'utf8_general_ci'
+          mysql version: '5.7'
+          mysql database: 'paimon'
+          mysql root password: ${{ env.MYSQL_ROOT_PASSWORD }}
       - name: Build
         run: |
           mvn clean install
