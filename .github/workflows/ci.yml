@@ -24,7 +24,7 @@ jobs:
       mysql:
         image: mysql:5.7
         ports:
-          - 33306:3306
+          - 3306:3306
     env:
       MVN_COMMON_OPTIONS: -U -B --no-transfer-progress
       MVN_BUILD_OUTPUT_FILE: "/tmp/mvn_build_output.out"
@@ -44,7 +44,7 @@ jobs:
       - name: Init MySQL
         run: |
           sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} -P3306
       - name: Build
         run: |
           mvn clean install
